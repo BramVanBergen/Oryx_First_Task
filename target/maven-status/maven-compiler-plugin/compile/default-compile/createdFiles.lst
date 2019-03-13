@@ -1,0 +1,5 @@
+base\Application.class
+base\models\User.class
+base\repositories\UserRepository.class
+base\WebConfiguration.class
+base\controllers\LoginController.class

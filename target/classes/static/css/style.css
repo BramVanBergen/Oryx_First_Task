@@ -1,0 +1,94 @@
+*{
+	margin: 0px;
+	padding: 0px;
+}
+
+table tbody tr td, table thead tr th {
+	text-align: center;
+	padding: 5px;
+	min-width: 5vw;
+}
+
+.table-hover > tbody > tr:hover {
+    background-color: #e0e0e0 ;
+}
+
+.fa-pencil-alt {
+	color: orange;
+	font-size: 20px;
+}
+
+.fa-trash-alt {
+	color: red;
+	font-size: 20px;
+}
+
+.save {
+	margin-top: 25px;
+	float:right;
+}
+
+.navbar-line {
+    border-left: orange 2px solid;
+    border-radius: 0;
+    line-height: 22px;
+    padding-left: 35px !important;
+    padding-right: 35px !important;
+}
+
+.active {
+	background-image: linear-gradient(to right, orange, white, white, white);
+}
+
+nav {
+	background-color: transparent !important;
+}
+
+ul.links {
+	position: relative;
+	left: 13vw;
+}
+
+ul.login {
+	position: absolute;
+	right: 0vw;
+}
+
+.navbarNav {
+	width: 100vw;
+}
+
+.gradient {
+	background-color: orange;
+	height: 6px;
+	background-image: linear-gradient(orange, white);
+	margin-bottom: 30px;
+}
+
+footer {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 35px;
+	background-image: linear-gradient(white, orange);
+	text-align: center;
+}
+
+.profile {
+	height: 100px;
+}
+
+.viewPassword {
+	height: 70px;
+	padding-top: 40px;
+	padding-left: 30px !important;
+}
+
+.padding-top-35px {
+	padding-top: 35px;
+}
+
+.btnSave {
+	width: 100%;
+}
