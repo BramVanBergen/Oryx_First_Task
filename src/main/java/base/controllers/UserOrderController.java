@@ -18,7 +18,9 @@ import base.Application;
 import base.models.Product;
 import base.models.User;
 import base.models.User.Userrole;
+import base.models.UserOrder;
 import base.repositories.ProductRepository;
+import base.repositories.UserOrderRepository;
 import base.repositories.UserRepository;
 
 @Controller
@@ -29,6 +31,8 @@ public class UserOrderController {
 	ProductRepository productRepository;
 	@Autowired
 	UserRepository userRepository;
+	@Autowired
+	UserOrderRepository userOrderRepository;
 
 	private static final Logger log = LoggerFactory.getLogger(Application.class);
 	private Boolean sessionExists = false;
@@ -37,8 +41,6 @@ public class UserOrderController {
 	@GetMapping("/products")
 	public String productsLoad(Model model, HttpSession session, User user) {
 		log.info("products");
-		Iterable<Product> products = productRepository.findAll();
-		products.forEach(product -> System.out.println(product.toString()));
 		model.addAttribute("products", productRepository.findAll());
 
 		// Check if a session exists
@@ -238,6 +240,57 @@ public class UserOrderController {
 		return "/users";
 	}
 
+	// Load the orders page
+	@GetMapping("/orders")
+	public String ordersLoad(Model model, HttpSession session, User user, Product product, UserOrder userorder) {
+		log.info("orders");
+
+		// Check if a session exists
+		CheckSessionExists(session, user, model);
+
+		Iterable<UserOrder> orders = userOrderRepository.findAll();
+		orders.forEach(order -> System.out.println(order.toString()));
+
+		model.addAttribute("orders", userOrderRepository.findAll());
+
+		model.addAttribute("products", productRepository.findAll());
+
+		return "orders";
+	}
+
+	@RequestMapping(value = "/saveOrder", method = RequestMethod.POST)
+	public String saveOrders(@RequestParam(name = "amount", required = true) Long amount,
+			@RequestParam(name = "userId", required = true) Long userId,
+			@RequestParam(name = "productId", required = true) Long productId,
+			@RequestParam(name = "pricePerUnit", required = true) Long pricePerUnit, Model model, HttpSession session,
+			User user, UserOrder order, Long totalPrice) {
+		log.info("saveOrder");
+
+		System.out.println(amount);
+		System.out.println(userId);
+		System.out.println(productId);
+		System.out.println(pricePerUnit);
+		totalPrice = pricePerUnit * amount;
+		System.out.println(totalPrice);
+
+		// Set the order values and save the order
+		order.setProductAmount(amount);
+		order.setProductId(productId);
+		order.setUserId(userId);
+		order.setTotalPrice(amount * pricePerUnit);
+		userOrderRepository.save(order);
+
+		System.out.println(userOrderRepository.findAll().toString());
+
+		// Check if a session exists
+		CheckSessionExists(session, user, model);
+
+		model.addAttribute("products", productRepository.findAll());
+
+		productsLoad(model, session, user);
+		return "products";
+	}
+
 	public void CheckSessionExists(HttpSession session, User user, Model model) {
 		// Check if a session exists
 		Long id = (Long) session.getAttribute("id");
@@ -249,8 +302,6 @@ public class UserOrderController {
 				user = userFound.get();
 				model.addAttribute("user", user);
 			}
-
-			log.info(user.toString());
 		} else {
 			setSessionExists(false);
 		}

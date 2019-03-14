@@ -55,15 +55,14 @@
 	<div class="gradient"></div>
 
 	<div class="container">
-		<h1>Products</h1>
+		<h1>Orders</h1>
 		<table class="table table-striped table-hover">
 			<thead>
 				<tr>
 					<th>Name</th>
-					<th>Description</th>
-					<th>Price</th>
 					<th>Amount</th>
-					<th>Order</th>
+					<th>Price</th>
+					<th>Pay</th>
 					<c:if test="${user.getRole() == 'ADMIN'}">
 						<th>Edit</th>
 						<th>Delete</th>
@@ -71,12 +70,9 @@
 				</tr>
 			</thead>
 			<tbody>
-				<c:forEach items="${products}" var="product">
-					<form
-						action="saveOrder?userId=${user.getId()}&productId=${product.getId()}&pricePerUnit=${product.getPricePerUnit()}"
-						method="POST">
+				<c:forEach items="${orders}" var="order">
 					<tr>
-						<td>${product.getProductName()}</td>
+						<td>${products.findById(order.getProductId()).get()}</td>
 						<td>${product.getProductDescription()}</td>
 						<td>&euro; ${product.pricePerUnit}</td>
 						<td><input type="number" name="amount" class="form-control" /></td>
@@ -89,7 +85,6 @@
 									class="fas fa-trash-alt"></i></a></td>
 						</c:if>
 					</tr>
-					</form>
 				</c:forEach>
 			</tbody>
 		</table>
