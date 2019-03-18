@@ -16,38 +16,47 @@
 <link href="../css/style.css" rel="stylesheet" />
 </head>
 <body>
-	<nav class="navbar navbar-expand-lg navbar-light">
+	<nav class="navbar navbar-expand-lg navbar-light container">
 		<button class="navbar-toggler" type="button" data-toggle="collapse"
 			data-target="#navbarNav" aria-controls="navbarNav"
 			aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<div class="collapse navbar-collapse" id="navbarNav">
-			<ul class="navbar-nav links">
+			<ul class="navbar-nav">
 				<li class="nav-item"><a class="nav-link navbar-line"
 					href="/home">Home </a></li>
 				<li class="nav-item active"><a class="nav-link navbar-line"
 					href="/products">Products <span class="sr-only">(current)</span></a></li>
+				<li class="nav-item"><a class="nav-link navbar-line"
+					href="/orders">Orders</a></li>
 				<c:if test="${user.getRole() == 'ADMIN' }">
 					<li class="nav-item"><a class="nav-link navbar-line"
 						href="/users">Users</a></li>
 				</c:if>
 			</ul>
-			<ul class="navbar-nav login">
-				<c:choose>
-					<c:when test="${user.getId() != null}">
-						<li class="nav-item"><a class="nav-link navbar-line"
-							href="/profile">${user.getUsername()}</a></li>
-						<li class="nav-item"><a class="nav-link navbar-line"
-							href="/logout">Log out</a></li>
-					</c:when>
-					<c:otherwise>
-						<li class="nav-item"><a class="nav-link navbar-line"
-							href="/login">Log in</a></li>
-						<li class="nav-item"><a class="nav-link navbar-line"
-							href="/registration">Register</a></li>
-					</c:otherwise>
-				</c:choose>
+			<c:choose>
+				<c:when test="${user.getRole() == 'ADMIN' }">
+					<ul class="navbar-nav offset-md-4">
+				</c:when>
+				<c:otherwise>
+					<ul class="navbar-nav offset-md-5">
+				</c:otherwise>
+			</c:choose>
+			<c:choose>
+				<c:when test="${user.getId() != null}">
+					<li class="nav-item"><a class="nav-link navbar-line"
+						href="/profile">${user.getUsername()}</a></li>
+					<li class="nav-item"><a class="nav-link navbar-line"
+						href="/logout">Log out</a></li>
+				</c:when>
+				<c:otherwise>
+					<li class="nav-item"><a class="nav-link navbar-line"
+						href="/login">Log in</a></li>
+					<li class="nav-item"><a class="nav-link navbar-line"
+						href="/registration">Register</a></li>
+				</c:otherwise>
+			</c:choose>
 
 			</ul>
 		</div>
@@ -72,23 +81,23 @@
 			</thead>
 			<tbody>
 				<c:forEach items="${products}" var="product">
-					<form
-						action="saveOrder?userId=${user.getId()}&productId=${product.getId()}&productName=${product.getProductName()}&pricePerUnit=${product.getPricePerUnit()}"
-						method="POST">
-					<tr>
-						<td>${product.getProductName()}</td>
-						<td>${product.getProductDescription()}</td>
-						<td>&euro; ${product.pricePerUnit}</td>
-						<td><input type="number" name="amount" class="form-control" /></td>
-						<td><input type="submit" name="submit"
-							class="btn btn-success" value="Order" /></td>
-						<c:if test="${user.getRole() == 'ADMIN'}">
-							<td><a href="editProduct?id=${product.getId()}"><i
-									class="fas fa-pencil-alt"></i></a></td>
-							<td><a href="deleteProduct?id=${product.getId()}"><i
-									class="fas fa-trash-alt"></i></a></td>
-						</c:if>
-					</tr>
+					<form action="saveOrder" method="POST">
+						<input type="hidden" value="${user.getId()}" name="userId">
+						<input type="hidden" value="${product.getId()}" name="productId">
+						<tr>
+							<td>${product.getProductName()}</td>
+							<td>${product.getProductDescription()}</td>
+							<td>&euro; ${product.pricePerUnit}</td>
+							<td><input type="number" name="amount" class="form-control" /></td>
+							<td><input type="submit" name="submit"
+								class="btn btn-success" value="Order" /></td>
+							<c:if test="${user.getRole() == 'ADMIN'}">
+								<td><a href="editProduct?id=${product.getId()}"><i
+										class="fas fa-pencil-alt"></i></a></td>
+								<td><a href="deleteProduct?id=${product.getId()}"><i
+										class="fas fa-trash-alt"></i></a></td>
+							</c:if>
+						</tr>
 					</form>
 				</c:forEach>
 			</tbody>

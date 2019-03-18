@@ -16,42 +16,47 @@
 <link href="../css/style.css" rel="stylesheet" />
 </head>
 <body>
-	<nav class="navbar navbar-expand-lg navbar-light">
+	<nav class="navbar navbar-expand-lg navbar-light container">
 		<button class="navbar-toggler" type="button" data-toggle="collapse"
 			data-target="#navbarNav" aria-controls="navbarNav"
 			aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<div class="collapse navbar-collapse" id="navbarNav">
-			<ul class="navbar-nav links">
-				<li class="nav-item"></li>
+			<ul class="navbar-nav">
 				<li class="nav-item"><a class="nav-link navbar-line"
 					href="/home">Home </a></li>
 				<li class="nav-item"><a class="nav-link navbar-line"
-					href="/products">Products</span></a></li>
-					<li class="nav-item active"><a class="nav-link navbar-line"
-					href="/products">Orders <span class="sr-only">(current)</span></a></li>
+					href="/products">Products</a></li>
+				<li class="nav-item active"><a class="nav-link navbar-line"
+					href="/orders">Orders <span class="sr-only">(current)</span></a></li>
 				<c:if test="${user.getRole() == 'ADMIN' }">
 					<li class="nav-item"><a class="nav-link navbar-line"
 						href="/users">Users</a></li>
 				</c:if>
 			</ul>
-			<ul class="navbar-nav login">
-				<c:choose>
-					<c:when test="${user.getId() != null}">
-						<li class="nav-item"><a class="nav-link navbar-line"
-							href="/profile">${user.getUsername()}</a></li>
-						<li class="nav-item"><a class="nav-link navbar-line"
-							href="/logout">Log out</a></li>
-					</c:when>
-					<c:otherwise>
-						<li class="nav-item"><a class="nav-link navbar-line"
-							href="/login">Log in</a></li>
-						<li class="nav-item"><a class="nav-link navbar-line"
-							href="/registration">Register</a></li>
-					</c:otherwise>
-				</c:choose>
-
+			<c:choose>
+				<c:when test="${user.getRole() == 'ADMIN' }">
+					<ul class="navbar-nav offset-md-4">
+				</c:when>
+				<c:otherwise>
+					<ul class="navbar-nav offset-md-5">
+				</c:otherwise>
+			</c:choose>
+			<c:choose>
+				<c:when test="${user.getId() != null}">
+					<li class="nav-item"><a class="nav-link navbar-line"
+						href="/profile">${user.getUsername()}</a></li>
+					<li class="nav-item"><a class="nav-link navbar-line"
+						href="/logout">Log out</a></li>
+				</c:when>
+				<c:otherwise>
+					<li class="nav-item"><a class="nav-link navbar-line"
+						href="/login">Log in</a></li>
+					<li class="nav-item"><a class="nav-link navbar-line"
+						href="/registration">Register</a></li>
+				</c:otherwise>
+			</c:choose>
 			</ul>
 		</div>
 	</nav>
@@ -69,10 +74,7 @@
 							<th>Price</th>
 							<th>Status</th>
 							<th>Cancel order</th>
-							<c:if test="${user.getRole() == 'ADMIN'}">
-								<th>Edit</th>
-								<th>Delete</th>
-							</c:if>
+							<th>Edit</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -90,23 +92,24 @@
 												class="btn btn-success" value="Pay order" /></td>
 											<td><input type="submit" name="submit"
 												class="btn btn-danger" value="Cancel order" /></td>
+											<td><a
+												href="editOrder?orderId=${order.getId()}&userId=${order.user.getId()}"><i
+													class="fas fa-pencil-alt"></i></a></td>
 										</c:when>
 										<c:when test="${order.getOrderStatus() == 'PAYED'}">
 											<td><input type="submit" name="submit"
 												class="btn btn-success" value="Delivered" /></td>
 											<td><input type="submit" name="submit"
 												class="btn btn-danger" value="Cancel payment" /></td>
+											<td>You can not edit an order after you payed for it.</td>
 										</c:when>
 										<c:otherwise>
-											<td>This order has been delivered</td>
+											<td>This order has been delivered.</td>
+											<td>A delivered order can't be cancelled.</td>
+											<td>You can not edit an order after it has been
+												delivered.</td>
 										</c:otherwise>
 									</c:choose>
-									<c:if test="${user.getRole() == 'ADMIN'}">
-										<td><a href="editProduct?id=${product.getId()}"><i
-												class="fas fa-pencil-alt"></i></a></td>
-										<td><a href="deleteProduct?id=${product.getId()}"><i
-												class="fas fa-trash-alt"></i></a></td>
-									</c:if>
 								</tr>
 							</form>
 						</c:forEach>

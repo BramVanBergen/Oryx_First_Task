@@ -9,10 +9,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link href="webjars/bootstrap/4.3.1/css/bootstrap.min.css"
 	rel="stylesheet">
-<link rel="stylesheet"
-	href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
-	integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
-	crossorigin="anonymous">
 <link href="../css/style.css" rel="stylesheet" />
 </head>
 <body>
@@ -28,11 +24,11 @@
 					href="/home">Home </a></li>
 				<li class="nav-item"><a class="nav-link navbar-line"
 					href="/products">Products</a></li>
-				<li class="nav-item"><a class="nav-link navbar-line"
-					href="/orders">Orders</a></li>
+				<li class="nav-item active"><a class="nav-link navbar-line"
+					href="/orders">Orders <span class="sr-only">(current)</span></a></li>
 				<c:if test="${user.getRole() == 'ADMIN' }">
-					<li class="nav-item active"><a class="nav-link navbar-line"
-						href="/users">Users <span class="sr-only">(current)</span></a></li>
+					<li class="nav-item"><a class="nav-link navbar-line"
+						href="/users">Users</a></li>
 				</c:if>
 			</ul>
 			<c:choose>
@@ -57,57 +53,49 @@
 						href="/registration">Register</a></li>
 				</c:otherwise>
 			</c:choose>
-
 			</ul>
 		</div>
 	</nav>
 	<div class="gradient"></div>
 
 	<div class="container">
-		<h1>Users</h1>
-		<table class="table table-striped table-hover">
-			<thead>
-				<tr>
-					<th>Id</th>
-					<th>First name</th>
-					<th>Last name</th>
-					<th>Email</th>
-					<th>Username</th>
-					<th>Admin</th>
-					<th>Edit</th>
-					<th>Delete</th>
-				</tr>
-			</thead>
-			<tbody>
-				<c:forEach items="${users}" var="item">
-					<form action="/editUser" method="POST">
-						<tr>
+		<h1>Edit order</h1>
+		<h3>${order.product.getProductName()}</h3>
 
-							<td>${item.getId()}</td>
-							<td>${item.getFirstName()}</td>
-							<td>${item.getLastName()}</td>
-							<td>${item.getEmail()}</td>
-							<td>${item.getUsername()}</td>
-							<td><c:choose>
-									<c:when test="${item.getRole() == 'ADMIN'}">
-										<input class="form-check-input" disabled type="checkbox"
-											checked value="Admin" /> Admin
-										</c:when>
-									<c:otherwise>
-										<input class="form-check-input" disabled type="checkbox"
-											value="Admin" /> Admin
-										</c:otherwise>
-								</c:choose></td>
-							<td><a href="editUser?id=${item.getId()}"><i
-									class="fas fa-pencil-alt"></i></a></td>
-							<td><a href="deleteUser?id=${item.getId()}"><i
-									class="fas fa-trash-alt"></i></a></td>
-						</tr>
-					</form>
-				</c:forEach>
-			</tbody>
-		</table>
-
+		<form action="editOrder" method="POST">
+			<input type="hidden" name="orderId" value="${order.getId()}" /> <input
+				type="hidden" name="productId" value="${order.product.getId()}" />
+			<div class="form-row">
+				<div class="col-md-6 form-group">
+					<label for="productName">Product name: </label> <input
+						class="form-control" type="text" name="productName"
+						value="${order.product.getProductName()}" disabled
+						placeholder="${order.product.getProductName()}" />
+				</div>
+				<div class="col-md-4 form-group">
+					<label for="pricePerUnit">Price per product: </label> <input
+						class="form-control" type="number" min="1" name="pricePerUnit"
+						value="${order.product.getPricePerUnit()}" disabled
+						placeholder="${order.product.getPricePerUnit()}" />
+				</div>
+				<div class="col-md-2 form-group">
+					<label for="amount">Amount: </label> <input class="form-control"
+						type="number" min="1" name="amount"
+						value="${order.getProductAmount()}"
+						placeholder="${order.getProductAmount()}" />
+				</div>
+			</div>
+			<div class="form-row"></div>
+			<div class="form-row">
+				<div class="col-md-2 offset-md-9">
+					<input type="submit" class="btn save btn-success"
+						value="Save changes" />
+				</div>
+				<div class="col-md-1">
+					<a href="/orders" class="btn save btn-secondary">Cancel</a>
+				</div>
+			</div>
+		</form>
 		<footer>&copy; Bram Van Bergen</footer>
 	</div>
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
