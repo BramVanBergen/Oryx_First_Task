@@ -92,7 +92,7 @@
 				</div>
 				<div class="col-md-2 offset-md-2 align-items-end viewPassword">
 					<input class="form-check-input" type="checkbox" name="viewPassword"
-						onclick="viewPassword()" /> <label for="viewPassword">View
+						onclick="viewPasswordFunction()" /> <label for="viewPassword">View
 						password</label>
 				</div>
 			</div>
@@ -103,8 +103,7 @@
 							<label for="role">Admin</label>
 				</div>
 				<div class="col-md-2 offset-md-6 padding-top-35px">
-					<input class="btn btn-warning btnSave" type="submit" name="submit"
-						onClick="checkRole()" value="Save changes">
+					<input class="btn btn-warning btnSave" type="submit" name="submit" value="Save changes">
 				</div>
 			</div>
 		</form>
@@ -112,25 +111,14 @@
 	<footer>&copy; Bram Van Bergen</footer>
 	</div>
 	<script type="text/javascript">
-		function viewPassword() {
+		function viewPasswordFunction() {
+			console.log("test")
 			var x = document.getElementById("password");
 			if (x.type === "password") {
 				x.type = "text";
 			} else {
 				x.type = "password";
 			}
-		}
-
-		function checkRole() {
-			var x = document.getElementById("role");
-			console.log(x);
-			if (x.checked) {
-				x.value = "ADMIN";
-			} else {
-				x.value = "USER";
-			}
-			console.log(x);
-			console.log(x.value);
 		}
 	</script>
 

@@ -24,10 +24,13 @@
 		</button>
 		<div class="collapse navbar-collapse" id="navbarNav">
 			<ul class="navbar-nav links">
+				<li class="nav-item"></li>
 				<li class="nav-item"><a class="nav-link navbar-line"
 					href="/home">Home </a></li>
-				<li class="nav-item active"><a class="nav-link navbar-line"
-					href="/products">Products <span class="sr-only">(current)</span></a></li>
+				<li class="nav-item"><a class="nav-link navbar-line"
+					href="/products">Products</span></a></li>
+					<li class="nav-item active"><a class="nav-link navbar-line"
+					href="/products">Orders <span class="sr-only">(current)</span></a></li>
 				<c:if test="${user.getRole() == 'ADMIN' }">
 					<li class="nav-item"><a class="nav-link navbar-line"
 						href="/users">Users</a></li>
@@ -56,45 +59,65 @@
 
 	<div class="container">
 		<h1>Orders</h1>
-		<table class="table table-striped table-hover">
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Amount</th>
-					<th>Price</th>
-					<th>Pay</th>
-					<c:if test="${user.getRole() == 'ADMIN'}">
-						<th>Edit</th>
-						<th>Delete</th>
-					</c:if>
-				</tr>
-			</thead>
-			<tbody>
-				<c:forEach items="${orders}" var="order">
-					<tr>
-						<td>${products.findById(order.getProductId()).get()}</td>
-						<td>${product.getProductDescription()}</td>
-						<td>&euro; ${product.pricePerUnit}</td>
-						<td><input type="number" name="amount" class="form-control" /></td>
-						<td><input type="submit" name="submit"
-							class="btn btn-success" value="Order" /></td>
-						<c:if test="${user.getRole() == 'ADMIN'}">
-							<td><a href="editProduct?id=${product.getId()}"><i
-									class="fas fa-pencil-alt"></i></a></td>
-							<td><a href="deleteProduct?id=${product.getId()}"><i
-									class="fas fa-trash-alt"></i></a></td>
-						</c:if>
-					</tr>
-				</c:forEach>
-			</tbody>
-		</table>
-		<c:if test="${user.getRole() == 'ADMIN'}">
-			<div class="row">
-				<div class="col-md-2 offset-md-10">
-					<a href="/editProduct" class="btn save btn-success">New product</a>
-				</div>
-			</div>
-		</c:if>
+		<c:choose>
+			<c:when test="${orders != null }">
+				<table class="table table-striped table-hover">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Amount</th>
+							<th>Price</th>
+							<th>Status</th>
+							<th>Cancel order</th>
+							<c:if test="${user.getRole() == 'ADMIN'}">
+								<th>Edit</th>
+								<th>Delete</th>
+							</c:if>
+						</tr>
+					</thead>
+					<tbody>
+
+						<c:forEach items="${orders}" var="order">
+
+							<form action="/orders?orderId=${order.getId()}" method="POST">
+								<tr>
+									<td>${order.product.getProductName()}</td>
+									<td>${order.getProductAmount()}</td>
+									<td>&euro; ${order.getTotalPrice()}</td>
+									<c:choose>
+										<c:when test="${order.getOrderStatus() == 'ORDERED'}">
+											<td><input type="submit" name="submit"
+												class="btn btn-success" value="Pay order" /></td>
+											<td><input type="submit" name="submit"
+												class="btn btn-danger" value="Cancel order" /></td>
+										</c:when>
+										<c:when test="${order.getOrderStatus() == 'PAYED'}">
+											<td><input type="submit" name="submit"
+												class="btn btn-success" value="Delivered" /></td>
+											<td><input type="submit" name="submit"
+												class="btn btn-danger" value="Cancel payment" /></td>
+										</c:when>
+										<c:otherwise>
+											<td>This order has been delivered</td>
+										</c:otherwise>
+									</c:choose>
+									<c:if test="${user.getRole() == 'ADMIN'}">
+										<td><a href="editProduct?id=${product.getId()}"><i
+												class="fas fa-pencil-alt"></i></a></td>
+										<td><a href="deleteProduct?id=${product.getId()}"><i
+												class="fas fa-trash-alt"></i></a></td>
+									</c:if>
+								</tr>
+							</form>
+						</c:forEach>
+
+					</tbody>
+				</table>
+			</c:when>
+			<c:otherwise>
+				<h4>There are currently no orders.</h4>
+			</c:otherwise>
+		</c:choose>
 		<footer>&copy; Bram Van Bergen</footer>
 	</div>
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

@@ -1,7 +1,5 @@
 package base.controllers;
 
-import java.util.Optional;
-
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -19,6 +17,7 @@ import base.models.Product;
 import base.models.User;
 import base.models.User.Userrole;
 import base.models.UserOrder;
+import base.models.UserOrder.OrderStatus;
 import base.repositories.ProductRepository;
 import base.repositories.UserOrderRepository;
 import base.repositories.UserRepository;
@@ -240,47 +239,33 @@ public class UserOrderController {
 		return "/users";
 	}
 
-	// Load the orders page
-	@GetMapping("/orders")
-	public String ordersLoad(Model model, HttpSession session, User user, Product product, UserOrder userorder) {
-		log.info("orders");
-
-		// Check if a session exists
-		CheckSessionExists(session, user, model);
-
-		Iterable<UserOrder> orders = userOrderRepository.findAll();
-		orders.forEach(order -> System.out.println(order.toString()));
-
-		model.addAttribute("orders", userOrderRepository.findAll());
-
-		model.addAttribute("products", productRepository.findAll());
-
-		return "orders";
-	}
-
+	// Save the order
 	@RequestMapping(value = "/saveOrder", method = RequestMethod.POST)
 	public String saveOrders(@RequestParam(name = "amount", required = true) Long amount,
 			@RequestParam(name = "userId", required = true) Long userId,
 			@RequestParam(name = "productId", required = true) Long productId,
+			@RequestParam(name = "productName", required = true) String productName,
 			@RequestParam(name = "pricePerUnit", required = true) Long pricePerUnit, Model model, HttpSession session,
-			User user, UserOrder order, Long totalPrice) {
+			User user, UserOrder order, Product product, Long totalPrice) {
 		log.info("saveOrder");
 
 		System.out.println(amount);
 		System.out.println(userId);
 		System.out.println(productId);
+		System.out.println(productName);
 		System.out.println(pricePerUnit);
 		totalPrice = pricePerUnit * amount;
 		System.out.println(totalPrice);
 
 		// Set the order values and save the order
 		order.setProductAmount(amount);
-		order.setProductId(productId);
-		order.setUserId(userId);
+		order.setProduct(productRepository.findById(productId).get());
+		order.setUser(userRepository.findById(userId).get());
 		order.setTotalPrice(amount * pricePerUnit);
+		order.setOrderStatus(OrderStatus.ORDERED);
 		userOrderRepository.save(order);
 
-		System.out.println(userOrderRepository.findAll().toString());
+		System.out.println(userOrderRepository.findAllByUserId(userId).toString());
 
 		// Check if a session exists
 		CheckSessionExists(session, user, model);
@@ -291,20 +276,100 @@ public class UserOrderController {
 		return "products";
 	}
 
-	public void CheckSessionExists(HttpSession session, User user, Model model) {
+	// Load the orders page
+	@GetMapping("/orders")
+	public String ordersLoad(Model model, HttpSession session, User user, Product product, UserOrder userorder) {
+		log.info("orders");
+
+		// Check if a session exists
+		user = CheckSessionExists(session, model);
+
+		System.out.println("user: " + user);
+
+		System.out.println(userOrderRepository.findAllByUserId(user.getId()));
+		model.addAttribute("orders", userOrderRepository.findAllByUserId(user.getId()));
+
+		return "orders";
+	}
+
+	// Pay the order or remove the order
+	@RequestMapping(value = "/orders", method = RequestMethod.POST)
+	public String handleOrders(@RequestParam(name = "orderId", required = true) Long orderId,
+			@RequestParam(name = "submit", required = false) String action, Model model, HttpSession session, User user,
+			UserOrder order, Long totalPrice) {
+		log.info("payOrRemoveOrder");
+
+		System.out.println(orderId);
+		System.out.println(action);
+
+		if (action == null) {
+			// no button has been selected
+		} else if (action.equals("Cancel order")) {
+			// delete button was pressed
+			userOrderRepository.deleteById(orderId);
+		} else if (action.equals("Pay order")) {
+			// update button was pressed
+			order = userOrderRepository.findById(orderId).get();
+			order.setOrderStatus(OrderStatus.PAYED);
+			userOrderRepository.save(order);
+		} else if (action.contentEquals("Delivered")) {
+			order = userOrderRepository.findById(orderId).get();
+			order.setOrderStatus(OrderStatus.DELIVERED);
+			userOrderRepository.save(order);
+		}
+
+		// Check if a session exists
+		user = CheckSessionExists(session, model);
+
+		System.out.println("user: " + user);
+
+		System.out.println(userOrderRepository.findAllByUserId(user.getId()).toString());
+
+		model.addAttribute("orders", userOrderRepository.findAllByUserId(user.getId()));
+
+		return "orders";
+	}
+
+	public User CheckSessionExists(HttpSession session, Model model) {
+		User user = new User();
 		// Check if a session exists
 		Long id = (Long) session.getAttribute("id");
+		System.out.println(id);
 		if (id != null) {
 			setSessionExists(true);
+			System.out.println("ID != null");
 			// Get the userdata from the session
-			Optional<User> userFound = userRepository.findById(id);
-			if (userFound.isPresent()) {
-				user = userFound.get();
-				model.addAttribute("user", user);
-			}
-		} else {
+			user = userRepository.findById(id).get();
+			System.out.println(user);
+			model.addAttribute("user", user);
+			return user;
+		} else
+
+		{
+			setSessionExists(false);
+			return user;
+		}
+
+	}
+
+	public User CheckSessionExists(HttpSession session, User user, Model model) {
+		// Check if a session exists
+		Long id = (Long) session.getAttribute("id");
+		System.out.println(id);
+		if (id != null) {
+			setSessionExists(true);
+			System.out.println("ID != null");
+			// Get the userdata from the session
+			user = userRepository.findById(id).get();
+			System.out.println(user);
+			model.addAttribute("user", user);
+
+		} else
+
+		{
 			setSessionExists(false);
 		}
+		return user;
 	}
 
 	public Boolean getSessionExists() {

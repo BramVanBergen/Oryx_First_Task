@@ -1,9 +1,16 @@
 package base.models;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 public class Product {
@@ -14,6 +21,9 @@ public class Product {
 	private String productName;
 	private String productDescription;
 	private Long pricePerUnit;
+	@Fetch(FetchMode.SELECT)
+	@OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+	private List<UserOrder> orders;
 
 	protected Product() {
 	}

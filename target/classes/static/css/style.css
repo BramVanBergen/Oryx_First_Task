@@ -44,16 +44,6 @@ nav {
 	background-color: transparent !important;
 }
 
-ul.links {
-	position: relative;
-	left: 13vw;
-}
-
-ul.login {
-	position: absolute;
-	right: 0vw;
-}
-
 .navbarNav {
 	width: 100vw;
 }

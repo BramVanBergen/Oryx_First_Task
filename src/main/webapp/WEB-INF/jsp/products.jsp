@@ -73,7 +73,7 @@
 			<tbody>
 				<c:forEach items="${products}" var="product">
 					<form
-						action="saveOrder?userId=${user.getId()}&productId=${product.getId()}&pricePerUnit=${product.getPricePerUnit()}"
+						action="saveOrder?userId=${user.getId()}&productId=${product.getId()}&productName=${product.getProductName()}&pricePerUnit=${product.getPricePerUnit()}"
 						method="POST">
 					<tr>
 						<td>${product.getProductName()}</td>

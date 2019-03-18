@@ -4,11 +4,14 @@ import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
+import base.models.User;
 import base.models.UserOrder;
 
 public interface UserOrderRepository extends CrudRepository<UserOrder, Long> {
-	List<UserOrder> findByUserId(Long userId);
+	Iterable<UserOrder> findAllByUserId(Long userId);
 
-	List<UserOrder> findByProductId(Long productId);
+	List<UserOrder> findByUser(User user);
+
+	Iterable<UserOrder> findAllByProductId(Long productId);
 
 }

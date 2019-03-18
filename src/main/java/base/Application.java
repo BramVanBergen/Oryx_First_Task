@@ -10,7 +10,10 @@ import org.springframework.context.annotation.Bean;
 import base.models.Product;
 import base.models.User;
 import base.models.User.Userrole;
+import base.models.UserOrder;
+import base.models.UserOrder.OrderStatus;
 import base.repositories.ProductRepository;
+import base.repositories.UserOrderRepository;
 import base.repositories.UserRepository;
 
 @SpringBootApplication
@@ -26,29 +29,36 @@ public class Application extends SpringBootServletInitializer {
 	}
 
 	@Bean
-	public CommandLineRunner createUsers(UserRepository repository) {
+	public CommandLineRunner demo(UserRepository repository, ProductRepository productRepository,
+			UserOrderRepository userOrderRepository) {
 		return (args) -> {
-			// save some users
-			repository.save(new User("Bram", "Van Bergen", "bram@test.be", "bram", "test", Userrole.ADMIN));
-			repository.save(new User("Dieter", "Verboven", "dieter@test.be", "dieter", "test", Userrole.USER));
-			repository.save(new User("Jens", "Sels", "jens@test.be", "jens", "test", Userrole.USER));
-		};
-	}
+			// Save some users
+			User bram = new User("Bram", "Van Bergen", "bram@test.be", "bram", "test", Userrole.ADMIN);
+			User dieter = new User("Dieter", "Verboven", "dieter@test.be", "dieter", "test", Userrole.USER);
+			User jens = new User("Jens", "Sels", "jens@test.be", "jens", "test", Userrole.USER);
+			repository.save(bram);
+			repository.save(dieter);
+			repository.save(jens);
 
-	@Bean
-	public CommandLineRunner createProducts(ProductRepository repository) {
-		return (args) -> {
-			// save some products
-			repository.save(new Product("Gibson Les Paul Studio 2019",
+			// Save some products
+			Product gibson = new Product("Gibson Les Paul Studio 2019",
 					"The Les Paul Studio embodies the essential Les Paul features with enhancements for playability and tonal versatility.",
-					(long) 1699.99));
-			repository.save(new Product("Fender American Professional Stratocaster",
+					(long) 1699.99);
+			Product fender = new Product("Fender American Professional Stratocaster",
 					"Often copied, but never surpassed, the Stratocaster is arguably the world's most-loved electric guitar.",
-					(long) 1725.00));
-			repository.save(new Product("Paul Reed Smith SE Custom 24",
+					(long) 1725.00);
+			Product prs = new Product("Paul Reed Smith SE Custom 24",
 					"The SE Custom 24 brings the original PRS design platform to the high-quality, more affordable SE line up of instruments.",
-					(long) 899.99));
+					(long) 899.99);
+			productRepository.save(gibson);
+			productRepository.save(fender);
+			productRepository.save(prs);
+
+			// Save some orders
+			userOrderRepository.save(new UserOrder(gibson, bram, (long) 2, (long) 3399.98, OrderStatus.ORDERED));
+			userOrderRepository.save(new UserOrder(prs, bram, (long) 5, (long) 4499.95, OrderStatus.PAYED));
+			userOrderRepository.save(new UserOrder(fender, dieter, (long) 3, (long) 5175, OrderStatus.DELIVERED));
+
 		};
 	}
-
 }
