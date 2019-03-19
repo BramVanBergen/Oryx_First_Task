@@ -43,20 +43,20 @@ public class Application extends SpringBootServletInitializer {
 			// Save some products
 			Product gibson = new Product("Gibson Les Paul Studio 2019",
 					"The Les Paul Studio embodies the essential Les Paul features with enhancements for playability and tonal versatility.",
-					(long) 1699.99);
+					(long) 1699);
 			Product fender = new Product("Fender American Professional Stratocaster",
 					"Often copied, but never surpassed, the Stratocaster is arguably the world's most-loved electric guitar.",
-					(long) 1725.00);
+					(long) 1725);
 			Product prs = new Product("Paul Reed Smith SE Custom 24",
 					"The SE Custom 24 brings the original PRS design platform to the high-quality, more affordable SE line up of instruments.",
-					(long) 899.99);
+					(long) 899);
 			productRepository.save(gibson);
 			productRepository.save(fender);
 			productRepository.save(prs);
 
 			// Save some orders
-			userOrderRepository.save(new UserOrder(gibson, bram, (long) 2, (long) 3399.98, OrderStatus.ORDERED));
-			userOrderRepository.save(new UserOrder(prs, bram, (long) 5, (long) 4499.95, OrderStatus.PAYED));
+			userOrderRepository.save(new UserOrder(gibson, bram, (long) 2, (long) 3398, OrderStatus.ORDERED));
+			userOrderRepository.save(new UserOrder(prs, bram, (long) 5, (long) 4495, OrderStatus.PAYED));
 
 		};
 	}

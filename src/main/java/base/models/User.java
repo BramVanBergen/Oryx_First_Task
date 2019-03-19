@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.Email;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -20,6 +21,7 @@ public class User {
 	private Long id;
 	private String firstName;
 	private String lastName;
+	@Email
 	private String email;
 	private String username;
 	private String password;

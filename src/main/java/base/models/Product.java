@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -19,7 +21,9 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String productName;
+	@Size(min = 0, max = 250)
 	private String productDescription;
+	@Min(0)
 	private Long pricePerUnit;
 	@Fetch(FetchMode.SELECT)
 	@OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
