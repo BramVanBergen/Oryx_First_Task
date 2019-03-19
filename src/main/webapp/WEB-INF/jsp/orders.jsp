@@ -65,57 +65,59 @@
 	<div class="container">
 		<h1>Orders</h1>
 		<c:choose>
-			<c:when test="${orders != null }">
-				<table class="table table-striped table-hover">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Amount</th>
-							<th>Price</th>
-							<th>Status</th>
-							<th>Cancel order</th>
-							<th>Edit</th>
-						</tr>
-					</thead>
-					<tbody>
+			<c:when test="${!orders.isEmpty() }">
+				<div class="table-responsive">
+					<table class="table table-striped table-hover">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Amount</th>
+								<th>Price</th>
+								<th>Status</th>
+								<th>Cancel order</th>
+								<th>Edit</th>
+							</tr>
+						</thead>
+						<tbody>
 
-						<c:forEach items="${orders}" var="order">
+							<c:forEach items="${orders}" var="order">
 
-							<form action="/orders?orderId=${order.getId()}" method="POST">
-								<tr>
-									<td>${order.product.getProductName()}</td>
-									<td>${order.getProductAmount()}</td>
-									<td>&euro; ${order.getTotalPrice()}</td>
-									<c:choose>
-										<c:when test="${order.getOrderStatus() == 'ORDERED'}">
-											<td><input type="submit" name="submit"
-												class="btn btn-success" value="Pay order" /></td>
-											<td><input type="submit" name="submit"
-												class="btn btn-danger" value="Cancel order" /></td>
-											<td><a
-												href="editOrder?orderId=${order.getId()}&userId=${order.user.getId()}"><i
-													class="fas fa-pencil-alt"></i></a></td>
-										</c:when>
-										<c:when test="${order.getOrderStatus() == 'PAYED'}">
-											<td><input type="submit" name="submit"
-												class="btn btn-success" value="Delivered" /></td>
-											<td><input type="submit" name="submit"
-												class="btn btn-danger" value="Cancel payment" /></td>
-											<td>You can not edit an order after you payed for it.</td>
-										</c:when>
-										<c:otherwise>
-											<td>This order has been delivered.</td>
-											<td>A delivered order can't be cancelled.</td>
-											<td>You can not edit an order after it has been
-												delivered.</td>
-										</c:otherwise>
-									</c:choose>
-								</tr>
-							</form>
-						</c:forEach>
+								<form action="/orders?orderId=${order.getId()}" method="POST">
+									<tr>
+										<td>${order.product.getProductName()}</td>
+										<td>${order.getProductAmount()}</td>
+										<td>&euro; ${order.getTotalPrice()}</td>
+										<c:choose>
+											<c:when test="${order.getOrderStatus() == 'ORDERED'}">
+												<td><input type="submit" name="submit"
+													class="btn btn-success" value="Pay order" /></td>
+												<td><input type="submit" name="submit"
+													class="btn btn-danger" value="Cancel order" /></td>
+												<td><a
+													href="editOrder?orderId=${order.getId()}&userId=${order.user.getId()}"><i
+														class="fas fa-pencil-alt"></i></a></td>
+											</c:when>
+											<c:when test="${order.getOrderStatus() == 'PAYED'}">
+												<td><input type="submit" name="submit"
+													class="btn btn-success" value="Delivered" /></td>
+												<td><input type="submit" name="submit"
+													class="btn btn-danger" value="Cancel payment" /></td>
+												<td>You can not edit an order after you payed for it.</td>
+											</c:when>
+											<c:otherwise>
+												<td>This order has been delivered.</td>
+												<td>A delivered order can't be cancelled.</td>
+												<td>You can not edit an order after it has been
+													delivered.</td>
+											</c:otherwise>
+										</c:choose>
+									</tr>
+								</form>
+							</c:forEach>
 
-					</tbody>
-				</table>
+						</tbody>
+					</table>
+				</div>
 			</c:when>
 			<c:otherwise>
 				<h4>There are currently no orders.</h4>

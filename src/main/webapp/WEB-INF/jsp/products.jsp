@@ -65,43 +65,54 @@
 
 	<div class="container">
 		<h1>Products</h1>
-		<table class="table table-striped table-hover">
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Description</th>
-					<th>Price</th>
-					<th>Amount</th>
-					<th>Order</th>
-					<c:if test="${user.getRole() == 'ADMIN'}">
-						<th>Edit</th>
-						<th>Delete</th>
-					</c:if>
-				</tr>
-			</thead>
-			<tbody>
-				<c:forEach items="${products}" var="product">
-					<form action="saveOrder" method="POST">
-						<input type="hidden" value="${user.getId()}" name="userId">
-						<input type="hidden" value="${product.getId()}" name="productId">
-						<tr>
-							<td>${product.getProductName()}</td>
-							<td>${product.getProductDescription()}</td>
-							<td>&euro; ${product.pricePerUnit}</td>
-							<td><input type="number" name="amount" class="form-control" /></td>
-							<td><input type="submit" name="submit"
-								class="btn btn-success" value="Order" /></td>
-							<c:if test="${user.getRole() == 'ADMIN'}">
-								<td><a href="editProduct?id=${product.getId()}"><i
-										class="fas fa-pencil-alt"></i></a></td>
-								<td><a href="deleteProduct?id=${product.getId()}"><i
-										class="fas fa-trash-alt"></i></a></td>
-							</c:if>
-						</tr>
-					</form>
-				</c:forEach>
-			</tbody>
-		</table>
+		<c:choose>
+			<c:when test="${!products.isEmpty() }">
+				<div class="table-responsive">
+					<table class="table table-striped table-hover">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Description</th>
+								<th>Price</th>
+								<th>Amount</th>
+								<th>Order</th>
+								<c:if test="${user.getRole() == 'ADMIN'}">
+									<th>Edit</th>
+									<th>Delete</th>
+								</c:if>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach items="${products}" var="product">
+								<form action="saveOrder" method="POST">
+									<input type="hidden" value="${user.getId()}" name="userId">
+									<input type="hidden" value="${product.getId()}"
+										name="productId">
+									<tr>
+										<td>${product.getProductName()}</td>
+										<td>${product.getProductDescription()}</td>
+										<td>&euro; ${product.pricePerUnit}</td>
+										<td><input type="number" name="amount"
+											class="form-control" /></td>
+										<td><input type="submit" name="submit"
+											class="btn btn-success" value="Order" /></td>
+										<c:if test="${user.getRole() == 'ADMIN'}">
+											<td><a href="editProduct?id=${product.getId()}"><i
+													class="fas fa-pencil-alt"></i></a></td>
+											<td><a href="deleteProduct?id=${product.getId()}"><i
+													class="fas fa-trash-alt"></i></a></td>
+										</c:if>
+									</tr>
+								</form>
+							</c:forEach>
+						</tbody>
+					</table>
+				</div>
+			</c:when>
+			<c:otherwise>
+				<h4>There are currently no products.</h4>
+			</c:otherwise>
+		</c:choose>
 		<c:if test="${user.getRole() == 'ADMIN'}">
 			<div class="row">
 				<div class="col-md-2 offset-md-10">

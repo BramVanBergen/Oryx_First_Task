@@ -57,7 +57,6 @@ public class Application extends SpringBootServletInitializer {
 			// Save some orders
 			userOrderRepository.save(new UserOrder(gibson, bram, (long) 2, (long) 3399.98, OrderStatus.ORDERED));
 			userOrderRepository.save(new UserOrder(prs, bram, (long) 5, (long) 4499.95, OrderStatus.PAYED));
-			userOrderRepository.save(new UserOrder(fender, dieter, (long) 3, (long) 5175, OrderStatus.DELIVERED));
 
 		};
 	}
