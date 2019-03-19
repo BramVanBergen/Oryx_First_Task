@@ -60,6 +60,7 @@
 	<div class="gradient"></div>
 
 	<div class="container">
+		<h1>Register</h1>
 		<form action="/registration" method="post">
 			<div class="form-row">
 				<div class="form-group col-md-5">
